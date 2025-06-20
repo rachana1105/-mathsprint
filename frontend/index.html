@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Entrance Math Practice</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        // Configure MathJax to process LaTeX in textContent after updates
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Auth Screen -->
+        <div class="screen active" id="authScreen">
+            <h1>📚 MathSprint</h1>
+            <p class="subtitle">Your personal math practice companion</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <div class="auth-error" id="loginError"></div>
+                <button class="auth-btn" onclick="handleLogin()">Login</button>
+                <p class="auth-hint">Please login using your registered email and password!</p>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password (min 6 characters)" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <div class="auth-error" id="signupError"></div>
+                <button class="auth-btn" onclick="handleSignup()">Sign Up</button>
+            </div>
+        </div>
+
+        <!-- Topic Selection Screen -->
+        <div class="screen" id="topicScreen">
+            <div class="user-header">
+                <div class="user-info">
+                    <span class="user-name" id="userName"></span>
+                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+            
+            <h1>📚 MathSprint</h1>
+            <p class="subtitle">Select topics to practice</p>
+            
+            <div class="topic-grid">
+                <div class="topic-btn" onclick="toggleTopic('algebra')">
+                    <div class="topic-icon">🔢</div>
+                    <div class="topic-name">Algebra</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('trigonometry')">
+                    <div class="topic-icon">📐</div>
+                    <div class="topic-name">Trigonometry</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('calculus')">
+                    <div class="topic-icon">∫</div>
+                    <div class="topic-name">Calculus</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('geometry')">
+                    <div class="topic-icon">△</div>
+                    <div class="topic-name">Geometry</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('vectors')">
+                    <div class="topic-icon">➡️</div>
+                    <div class="topic-name">Vectors</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('matrices')">
+                    <div class="topic-icon">📉</div>
+                    <div class="topic-name">Matrices</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('statistics')">
+                    <div class="topic-icon">📊</div>
+                    <div class="topic-name">Statistics</div>
+                </div>
+                <div class="topic-btn" onclick="toggleTopic('probability')">
+                    <div class="topic-icon">🎲</div>
+                    <div class="topic-name">Probability</div>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startPractice()" id="startBtn" disabled>
+                Start Practice (0 Questions)
+            </button>
+        </div>
+
+        <!-- Question Screen -->
+        <div class="screen" id="questionScreen">
+            <div class="header-bar">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Score:</span>
+                        <span class="stat-value" id="correctCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Remaining:</span>
+                        <span class="stat-value" id="remaining">10</span>
+                    </div>
+                </div>
+                <div class="question-num" id="questionNum">Question 1/10</div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-info-bar">
+                    <span class="question-topic" id="currentTopic"></span>
+                    <span class="difficulty-level" id="difficultyLevel"></span>
+                </div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="explanation alert-warning" id="explanation">
+                    <div class="explanation-title">💡 Explanation:</div>
+                    <div class="explanation-text" id="explanationText"></div>
+                </div>
+            </div>
+
+            <button class="next-btn" onclick="nextQuestion()" id="nextBtn" style="display: none;">
+                Next Question →
+            </button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen">
+            <h1>🎯 Practice Complete!</h1>
+            <div class="results">
+                <div class="result-score" id="finalScore">0/10</div>
+                <div class="result-text">Great effort! Keep practicing to improve.</div>
+            </div>
+
+            <div class="performance">
+                <div class="perf-card">
+                    <div class="perf-value" id="accuracy">0%</div>
+                    <div class="perf-label">Accuracy</div>
+                </div>
+                <div class="perf-card">
+                    <div class="perf-value" id="totalQuestions">10</div>
+                    <div class="perf-label">Questions</div>
+                </div>
+            </div>
+
+            <button class="home-btn" onclick="goHome()">Practice Again</button>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
