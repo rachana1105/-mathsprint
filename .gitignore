@@ -1,0 +1,14 @@
+# Environment variables
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Database (contains real user data at runtime)
+*.db
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
